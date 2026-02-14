@@ -1,122 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Heart Tree</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+    <link type="text/css" rel="stylesheet" href="file/default.css">
 
-    body {
-      background: #000;
-      color: #cfefff;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
+    <script src="file/jquery.min.js"></script>
+    <script src="file/jscex.min.js"></script>
+    <script src="file/jscex-parser.js"></script>
+    <script src="file/jscex-jit.js"></script>
+    <script src="file/jscex-builderbase.min.js"></script>
+    <script src="file/jscex-async.min.js"></script>
+    <script src="file/jscex-async-powerpack.min.js"></script>
+    <script src="file/function.js"></script>
+    <script src="file/love.js"></script>
 
-    .message {
-      position: absolute;
-      top: 8vh;
-      left: 5vw;
-      font-size: clamp(14px, 2.5vw, 22px);
-      opacity: 0.9;
-    }
-
-    canvas {
-      width: 100vw;
-      height: 100vh;
-      display: block;
-    }
-
-    @media (max-width: 768px) {
-      .message {
-        top: 5vh;
-        left: 5vw;
-        font-size: 4vw;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="message">When something feels important,</div>
-  <canvas id="tree"></canvas>
-
-  <script>
-    const canvas = document.getElementById("tree");
-    const ctx = canvas.getContext("2d");
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    const hearts = [];
-
-    function random(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    function createHeart() {
-      return {
-        x: canvas.width / 2 + random(-120, 120),
-        y: canvas.height / 2 + random(-220, -40),
-        size: random(6, 14),
-        color: `hsl(${random(0, 360)}, 80%, 70%)`,
-        speed: random(0.2, 0.6),
-      };
-    }
-
-    for (let i = 0; i < 200; i++) {
-      hearts.push(createHeart());
-    }
-
-    function drawHeart(x, y, size, color) {
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.bezierCurveTo(x - size, y - size, x - size * 2, y + size / 2, x, y + size * 1.8);
-      ctx.bezierCurveTo(x + size * 2, y + size / 2, x + size, y - size, x, y);
-      ctx.fill();
-    }
-
-    function drawTreeTrunk() {
-      ctx.fillStyle = "#f4b6c2";
-      ctx.fillRect(canvas.width / 2 - 12, canvas.height / 2 - 40, 24, 180);
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      drawTreeTrunk();
-
-      hearts.forEach((h) => {
-        drawHeart(h.x, h.y, h.size, h.color);
-        h.y -= h.speed;
-
-        if (h.y < canvas.height / 2 - 260) {
-          Object.assign(h, createHeart());
+    <script>
+        function playAudio() {
+            var audio = document.getElementById("myAudio");
+            audio.play();
         }
-      });
+    </script>
+</head>
 
-      requestAnimationFrame(animate);
+<body>
+<div id="main">
+
+    <!-- Background music -->
+    <audio autoplay id="myAudio">
+        <source src="aud.mp3" type="audio/mp3">
+    </audio>
+
+    <div id="wrap">
+
+        <!-- Romantic text -->
+        <div id="text">
+            <div id="code" style="display:none;">
+                <span class="say">When something feels important,</span><br>
+                <span class="say">I don’t leave it to chance. 😉</span><br>
+                <span class="say">So instead of just texting casually…</span><br>
+                <span class="say">I decided to design this properly. 🙇🏻‍♂️</span><br>
+                <span class="say">No random lines. No half-effort moves.</span><br>
+                <span class="say">Because some people deserve more than ordinary. ✨</span><br>
+                <span class="say">And I think you’re one of them. ❤️</span><br><br>
+
+                <span class="say">So… I have one question for you.</span><br>
+                <span class="say"><b>Would you like to go on a date with me? 💌</b></span>
+            </div>
+        </div>
+
+        <!-- Heart animation canvas -->
+        <canvas id="canvas" width="1100" height="680"></canvas>
+
+    </div>
+</div>
+
+
+<script>
+(function () {
+
+    var canvas = $('#canvas');
+
+    if (!canvas[0].getContext) {
+        return false;
     }
 
-    animate();
-  </script>
+    var width = canvas.width();
+    var height = canvas.height();
+    canvas.attr("width", width);
+    canvas.attr("height", height);
+
+    var opts = {
+        seed: {
+            x: width / 2 - 20,
+            color: "rgb(190, 26, 37)",
+            scale: 2
+        },
+        branch: [
+            [535, 680, 570, 250, 500, 200, 30, 100, [
+                [540, 500, 455, 417, 340, 400, 13, 100, [
+                    [450, 435, 434, 430, 394, 395, 2, 40]
+                ]],
+                [550, 445, 600, 356, 680, 345, 12, 100, [
+                    [578, 400, 648, 409, 661, 426, 3, 80]
+                ]],
+                [539, 281, 537, 248, 534, 217, 3, 40],
+                [546, 397, 413, 247, 328, 244, 9, 80, [
+                    [427, 286, 383, 253, 371, 205, 2, 40],
+                    [498, 345, 435, 315, 395, 330, 4, 60]
+                ]],
+                [546, 357, 608, 252, 678, 221, 6, 100, [
+                    [590, 293, 646, 277, 648, 271, 2, 80]
+                ]]
+            ]]
+        ],
+        bloom: {
+            num: 700,
+            width: 1080,
+            height: 650
+        },
+        footer: {
+            width: 1200,
+            height: 5,
+            speed: 10
+        }
+    };
+
+    var tree = new Tree(canvas[0], width, height, opts);
+    var seed = tree.seed;
+    var foot = tree.footer;
+    var hold = 1;
+
+    /* Click to start animation + music */
+    canvas.click(function (e) {
+        playAudio();
+
+        var offset = canvas.offset(), x, y;
+        x = e.pageX - offset.left;
+        y = e.pageY - offset.top;
+
+        if (seed.hover(x, y)) {
+            hold = 0;
+            canvas.unbind("click");
+            canvas.unbind("mousemove");
+            canvas.removeClass('hand');
+        }
+    }).mousemove(function (e) {
+        var offset = canvas.offset(), x, y;
+        x = e.pageX - offset.left;
+        y = e.pageY - offset.top;
+        canvas.toggleClass('hand', seed.hover(x, y));
+    });
+
+
+    /* Animations */
+    var seedAnimate = eval(Jscex.compile("async", function () {
+        seed.draw();
+        while (hold) {
+            $await(Jscex.Async.sleep(10));
+        }
+        while (seed.canScale()) {
+            seed.scale(0.95);
+            $await(Jscex.Async.sleep(10));
+        }
+        while (seed.canMove()) {
+            seed.move(0, 2);
+            foot.draw();
+            $await(Jscex.Async.sleep(10));
+        }
+    }));
+
+    var growAnimate = eval(Jscex.compile("async", function () {
+        do {
+            tree.grow();
+            $await(Jscex.Async.sleep(10));
+        } while (tree.canGrow());
+    }));
+
+    var flowAnimate = eval(Jscex.compile("async", function () {
+        do {
+            tree.flower(2);
+            $await(Jscex.Async.sleep(10));
+        } while (tree.canFlower());
+    }));
+
+    var moveAnimate = eval(Jscex.compile("async", function () {
+        tree.snapshot("p1", 240, 0, 610, 680);
+        while (tree.move("p1", 500, 0)) {
+            foot.draw();
+            $await(Jscex.Async.sleep(10));
+        }
+        foot.draw();
+        tree.snapshot("p2", 500, 0, 610, 680);
+
+        canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
+        canvas.css("background", "#ffe");
+        $await(Jscex.Async.sleep(300));
+        canvas.css("background", "none");
+    }));
+
+    var textAnimate = eval(Jscex.compile("async", function () {
+        $("#code").show().typewriter();
+    }));
+
+    var runAsync = eval(Jscex.compile("async", function () {
+        $await(seedAnimate());
+        $await(growAnimate());
+        $await(flowAnimate());
+        $await(moveAnimate());
+        textAnimate().start();
+    }));
+
+    runAsync().start();
+
+})();
+</script>
 
 </body>
 </html>
